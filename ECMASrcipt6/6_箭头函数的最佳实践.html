@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>6_箭头函数的最佳实践</title>
+</head>
+<style>
+    div {
+        text-align: center;
+        height: 300px;
+        width: 300px;
+        margin: 10px 0;
+    }
+
+    #old_demo {
+        background-color: green;
+    }
+
+    #new_demo {
+        background-color: blue;
+    }
+</style>
+<body>
+<h1>普通函数和箭头函数的最佳实践案例</h1>
+<h2>箭头函数最佳实践</h2>
+<ul>
+    <li>箭头函数适合与this无关的回调函数，如定时器、数组访问等</li>
+    <li>箭头函数不适合与this有关的回调函数，如DOM事件绑定，对象的方法等</li>
+</ul>
+<div id="old_demo">【普通函数】点我半秒后变色</div>
+<div id="new_demo">【箭头函数】点我半秒后变色</div>
+<script>
+    let oldDemo = document.getElementById("old_demo");
+    oldDemo.addEventListener("click", function () {
+        console.log(this);
+        // <div id="oldDemo"></div>
+        let that = this;
+        setTimeout(function () {
+            console.log(this);
+            // [object Window]
+            console.log(that);
+            // <div id="oldDemo"></div>
+            that.style.background = "yellow";
+        }, 500)
+        /**
+         * 如果使用普通函数：
+         * 第一个this指向div，第二个this指向window，
+         * 为了保证在内层函数中可以访问到div，需要外层函数传递
+         * */
+    })
+    let newDemo = document.getElementById("new_demo");
+    newDemo.addEventListener("click", function () {//这里不适合使用箭头函数
+        console.log(this);
+        // <div id="oldDemo"></div>
+        setTimeout(() => {
+            console.log(this);
+            // <div id="oldDemo"></div>
+            this.style.background = "red";
+        }, 500)
+        /**
+         * 如果使用箭头函数：
+         * 第二个this为外层函数（第一个普通方法）的this，即div
+         * */
+    })
+</script>
+</body>
+</html>
